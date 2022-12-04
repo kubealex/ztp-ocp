@@ -2,6 +2,7 @@
 variable "hostname" { default = "ztp-sno" }
 variable "memory" { default = 32 }
 variable "cpu" { default = 8 }
+variable "vm_mac_address" { default = "52:54:00:bd:ab:cc" }
 variable "vm_volume_size" { default = 105 }
 variable "vm_net_ip" { default = "192.168.210.7" }
 variable "local_volume_size" { default = 50 }
@@ -31,7 +32,7 @@ resource "libvirt_volume" "local_disk" {
 # Create the machine
 resource "libvirt_domain" "master" {
   count = 1
-  name = "${var.hostname}"
+  name = "var.hostname
   memory = var.memory*1024
   machine = "q35"
   firmware = "/usr/share/edk2/ovmf/OVMF_CODE.secboot.fd"
@@ -53,10 +54,10 @@ resource "libvirt_domain" "master" {
    }
 
   network_interface {
-    hostname = "${var.hostname}"
+    hostname = var.hostname
     network_name = var.libvirt_network
-    mac = "52:54:00:bd:ab:cc"
-    addresses = [ "${var.vm_net_ip}" ]
+    mac = var.vm_mac_address
+    addresses = [ var.vm_net_ip ]
   }
 
   boot_device {
@@ -89,4 +90,8 @@ terraform {
 
 output "macs" {
   value = "${flatten(libvirt_domain.master.*.network_interface.0.mac)}"
+}
+
+output "id" {
+  value = "${ libvirt_domain.master.*.id }"
 }

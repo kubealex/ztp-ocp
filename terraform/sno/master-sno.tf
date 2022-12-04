@@ -33,7 +33,7 @@ resource "libvirt_domain" "master" {
   count = 1
   name = "${var.hostname}"
   memory = var.memory*1024
-  firmware = /usr/share/OVMF/OVMF_CODE.secboot.fd
+  firmware = /usr/share/edk2/ovmf/OVMF_CODE.secboot.fd
   vcpu = var.cpu
 
   cpu {

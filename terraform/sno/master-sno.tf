@@ -32,7 +32,7 @@ resource "libvirt_volume" "local_disk" {
 # Create the machine
 resource "libvirt_domain" "master" {
   count = 1
-  name = "var.hostname
+  name = var.hostname
   memory = var.memory*1024
   machine = "q35"
   firmware = "/usr/share/edk2/ovmf/OVMF_CODE.secboot.fd"

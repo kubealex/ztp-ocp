@@ -54,7 +54,6 @@ resource "libvirt_domain" "master" {
 
   network_interface {
     hostname = "${var.hostname}"
-    wait_for_lease = true
     network_name = var.libvirt_network
     mac = "52:54:00:bd:ab:cc"
     addresses = [ "${var.vm_net_ip}" ]

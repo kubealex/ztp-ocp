@@ -5,7 +5,7 @@ variable "network_cidr" {
   type = list
   default = ["192.168.210.0/24"]
 }
-variable "cluster_name" { default = "ocp4" }
+variable "cluster_name" { default = "ztp" }
 variable "libvirt_pool_path" { default = "/var/lib/libvirt/images" }
 
 # instance the provider
@@ -31,10 +31,12 @@ resource "libvirt_network" "ocp_network" {
   dhcp {
     enabled = false
   }
+
   dns {
     enabled = true
     local_only = true
   }
+
   dnsmasq_options {
     options  {
         option_name = "server"

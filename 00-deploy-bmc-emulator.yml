@@ -1,0 +1,36 @@
+---
+- name: Deploy sushy-tools emulator
+  hosts: vm_host
+  tasks:
+    - name: sushy-tools Setup | Gather the package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: sushy-tools Setup | Fail if podman is not present
+      ansible.builtin.fail:
+        msg: "Podman must be present to run"
+      when: ansible_facts.packages['podman'] is undefined
+
+    - name: sushy-tools Setup | Create folder for sushy-tools config
+      ansible.builtin.file:
+        path: ~/sushy-tools
+        mode: 0755
+        state: directory
+
+    - name: sushy-tools Setup | Fire sushy-tools configuration
+      ansible.builtin.template:
+        src: sushy-tools.conf.j2
+        dest: ~/sushy-tools/sushy-tools.conf
+
+    - name: sushy-tools Setup | Create gitea container
+      containers.podman.podman_container:
+        name: sushy-emulator
+        volume:
+          - /var/run/libvirt:/var/run/libvirt:Z
+          - ~/sushy-tools/sushy-tools.conf:/etc/sushy/sushy-emulator.conf:Z
+        privileged: true
+        image:  quay.io/metal3-io/sushy-tools:latest
+        ports:
+          - "{{ sushy_port | default(8000,true) }}:8000"
+        env:
+          SUSHY_EMULATOR_CONFIG: /etc/sushy/sushy-emulator.conf

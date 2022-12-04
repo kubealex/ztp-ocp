@@ -28,6 +28,7 @@ resource "libvirt_network" "ocp_network" {
   domain = var.domain
 
   addresses = var.network_cidr
+
   dhcp {
     enabled = false
   }

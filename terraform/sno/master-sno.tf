@@ -7,7 +7,7 @@ variable "vm_net_ip" { default = "192.168.210.7" }
 variable "local_volume_size" { default = 50 }
 variable "local_volume_enabled" { default = false }
 variable "libvirt_network" { default = "ztp" }
-variable "libvirt_pool" { default = "default" }
+variable "libvirt_pool" { default = "ztp" }
 
 provider "libvirt" {
   uri = "qemu:///system"
@@ -55,7 +55,6 @@ resource "libvirt_domain" "master" {
   network_interface {
     network_name = var.libvirt_network
     mac = "52:54:00:bd:ab:cc"
-    wait_for_lease = true
     addresses = [ "${var.vm_net_ip}" ]
   }
 

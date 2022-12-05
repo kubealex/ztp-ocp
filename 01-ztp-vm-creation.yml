@@ -56,7 +56,7 @@
           cpu: "{{ ztp_node_cpu | default(8, true) }}"
           memory: "{{ ztp_node_memory | default(32, true) }}"
           vm_volume_size: "{{ ztp_node_disk_size | default(100, true) }}"
-          vm_mac_address: "{{ ztp_node_mac_address }}"
+          vm_mac_address: "{{ ztp_node_mac_address | default('52:54:00' | community.general.random_mac, true) }}"
           local_volume_size: "{{ ztp_node_local_storage_size | default(50, true) }}"
           local_volume_enabled: "{{ ztp_node_local_storage_enabled | default(false, true) }}"
         state: present

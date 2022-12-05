@@ -38,7 +38,7 @@
         variables:
           domain: "{{ ztp_cluster_name | default('ztp-sno', true) }}.{{ ztp_cluster_domain | default('ocpdemo.labs', true) }}"
           network_cidr: ' ["{{ ztp_network_cidr | default("192.168.210.0/24", true) }}"]'
-          cluster_name: "{{ ztp_cluster_name | default('ztp-sno', true) }}"
+          cluster_name: "{{ ztp_cluster_name | default('ztp', true) }}"
           dns: "{{ ztp_node_ip | default('192.168.210.7') }}"
         force_init: true
         state: present

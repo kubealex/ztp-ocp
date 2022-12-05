@@ -1,4 +1,3 @@
-# example-node1-bmh-secret & assisted-deployment-pull-secret need to be created under same namespace example-sno
 ---
 apiVersion: ran.openshift.io/v1
 kind: SiteConfig
@@ -24,7 +23,7 @@ spec:
     serviceNetwork:
       - 172.30.0.0/16
     nodes:
-      - hostName: "{{ ztp_node_name | default('ztp-sno', true) }}.{{ ztp_cluster_domain }}"
+      - hostName: "{{ ztp_node_name | default('ztp-sno', true) }}.{{ ztp_cluster_domain | default('ocpdemo.labs', true) }}"
         role: "master"
         bmcAddress: "redfish-virtualmedia+http://192.168.100.1:8000/redfish/v1/Systems/{{ node_uuid }}"
         bmcCredentialsName:

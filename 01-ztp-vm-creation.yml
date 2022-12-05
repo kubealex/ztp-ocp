@@ -32,6 +32,11 @@
         - id_rsa_ocp_setup
         - id_rsa_ocp_setup.pub
 
+    - name: Slurp key to get content
+      ansible.builtin.slurp:
+        path: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/id_rsa_ocp_setup.pub"
+      register: ztp_key
+
     - name: Use TF project to ensure pool and network are defined
       community.general.terraform:
         project_path: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/terraform/libvirt-resources"
@@ -63,8 +68,14 @@
       become: true
       register: tf_output
 
-    - name: Print machine id test
-      ansible.builtin.debug:
-        msg: |
-          Host MAC: "{{ tf_output.outputs.macs.value | join('') }}"
-          Host UUID: "{{ tf_output.outputs.id.value | join('') }}"
+    - name: Use outputs to trigger template
+      ansible.builtin.set_fact:
+        node_mac: "{{ tf_output.outputs.macs.value | join('') }}"
+        node_uuid: "{{ tf_output.outputs.id.value | join('') }}"
+        ztp_node_ssh_key: "{{ ztp_key.content | b64decode }}"
+
+    - name: Fire up site config template
+      ansible.builtin.template:
+        src: ztp-sno.yaml.j2
+        dest: "{{ playbook_dir }}/ztp.yml"
+        mode: 0755

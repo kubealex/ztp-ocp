@@ -10,7 +10,7 @@ spec:
   pullSecretRef:
     name: "assisted-deployment-pull-secret"
   clusterImageSetNameRef: "openshift-4.11"
-  sshPublicKey: {{ ztp_sshKey | quote }}
+  sshPublicKey: {{ ztp_node_ssh_key | quote }}
   clusters:
   - clusterName: {{ ztp_cluster_name | quote }}
     networkType: "OVNKubernetes"
@@ -21,54 +21,33 @@ spec:
     clusterNetwork:
       - cidr: 10.128.0.0/14
         hostPrefix: 23
-#    machineNetwork:
-#      - cidr: 1111:2222:3333:4444::/64
     serviceNetwork:
       - 172.30.0.0/16
-#    additionalNTPSources:
-#      - 1111:2222:3333:4444::2
     nodes:
-      - hostName: "example-node1.example.com"
+      - hostName: "{{ ztp_node_name }}.{{ ztp_cluster_domain }}"
         role: "master"
-        # Optionally; This can be used to configure desired BIOS setting on a host:
-        #biosConfigRef:
-        #  filePath: "example-hw.profile"
-        bmcAddress: "redfish-virtualmedia+http://192.168.100.1:8000/redfish/v1/Systems/"
+        bmcAddress: "redfish-virtualmedia+http://192.168.100.1:8000/redfish/v1/Systems/{{ node_uuid }}"
         bmcCredentialsName:
           name: "baremetal-creds"
-        bootMACAddress: "AA:BB:CC:DD:EE:11"
-        # Use UEFISecureBoot to enable secure boot
+        bootMACAddress: {{ ztp_node_mac_address | default(node_mac, true) }}
         bootMode: "UEFI"
         rootDeviceHints:
           wwn: "0x11111000000asd123"
-        # example of diskPartition below is used for image registry (check ImageRegistry.md for more details), but it's not limited to this use case
         cpuset: "0-1,52-53"
         nodeNetwork:
           interfaces:
-            - name: eno1
-              macAddress: {{ '51:53:00' | community.general.random_mac | quote }}
+            - name: enp3s0
+              macAddress: {{ ztp_node_mac_address | default(node_mac, true) }}
           config:
             interfaces:
-              - name: eno1
+              - name: enp3s0
                 type: ethernet
                 state: up
-                macAddress: {{ '51:53:00' | community.general.random_mac | quote }}
                 ipv4:
                   enabled: true
-                  address:
-                  - ip: 192.168.230.254
-                    prefix-length: 32
+                  dhcp: true
+                  auto-dns: true
+                  auto-gateway: true
+                  auto-routes: true
                 ipv6:
                   enabled: false
-            dns-resolver:
-              config:
-                search:
-                - {{ ztp_cluster_domain | quote }}
-                server:
-                - 192.168.230.1
-            routes:
-              config:
-              - destination: ::/0
-                next-hop-interface: eno1
-                next-hop-address: 1111:2222:3333:4444::1
-                table-id: 254

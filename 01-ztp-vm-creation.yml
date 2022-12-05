@@ -1,7 +1,6 @@
 ---
 - name: ZTP Setup | Create VM and setup templates
   hosts: vm_host
-  become: true
   tasks:
     - name: Set home directory as fact for the user
       ansible.builtin.set_fact:
@@ -44,6 +43,7 @@
           dns: "{{ ztp_node_ip | default('192.168.210.7') }}"
         force_init: true
         state: present
+      become: true
 
     - name: ZTP Setup | Provision spare node with Terraform
       community.general.terraform:
@@ -61,6 +61,7 @@
           local_volume_size: "{{ ztp_node_local_storage_size | default(50, true) }}"
           local_volume_enabled: "{{ ztp_node_local_storage_enabled | default(false, true) }}"
         state: present
+      become: true
       register: tf_output
 
     - name: Print machine id

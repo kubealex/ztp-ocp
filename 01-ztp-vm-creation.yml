@@ -17,7 +17,7 @@
     - name: Copy terraform files on host
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/terraform"
-        path: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}"
+        dest: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}"
         mode: 0755
 
     - name: Create ssh keypair

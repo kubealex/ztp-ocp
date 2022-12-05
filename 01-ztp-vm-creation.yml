@@ -63,6 +63,6 @@
       become: true
       register: tf_output
 
-    - name: Print machine id
+    - name: Print machine id test
       ansible.builtin.debug:
         var: tf_output

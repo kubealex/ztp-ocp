@@ -11,13 +11,13 @@
     - name: Creating workspace
       ansible.builtin.file:
         state: directory
-        path: "{{ ztp_home }}/{{ ztp_cluster_name }}"
+        path: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}"
         recurse: true
 
     - name: Copy terraform files on host
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/terraform"
-        path: "{{ ztp_home }}/{{ ztp_cluster_name }}"
+        path: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}"
         mode: 0755
 
     - name: Create ssh keypair
@@ -28,7 +28,7 @@
     - name: Copy SSH keys in working directory
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/{{ item }}"
-        dest: "{{ ztp_home }}/{{ cluster.name }}/{{ item }}"
+        dest: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/{{ item }}"
         mode: 0755
       loop:
         - id_rsa_ocp_setup
@@ -36,7 +36,7 @@
 
     - name: Use TF project to ensure pool and network are defined
       community.general.terraform:
-        project_path: "{{ ztp_home }}/{{ ztp_cluster_name }}/terraform/libvirt-resources"
+        project_path: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/terraform/libvirt-resources"
         variables:
           domain: "{{ ztp_cluster_name | default('ztp-sno', true) }}.{{ ztp_cluster_domain | default('ocpdemo.labs', true) }}"
           network_cidr: ' ["{{ ztp_network_cidr | default("192.168.210.0/24", true) }}"]'
@@ -47,13 +47,13 @@
 
     - name: ZTP Setup | Provision spare node with Terraform
       community.general.terraform:
-        project_path: "{{ ztp_home }}/{{ ztp_cluster_name }}/terraform/ztp-sno"
+        project_path: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/terraform/ztp-sno"
         force_init: true
         variables:
           hostname: "{{ ztp_node_name | default('ztp-sno', true) }}"
           libvirt_network: "{{ ztp_cluster_name | default('ztp', true) }}"
           libvirt_pool: "{{ ztp_cluster_name | default('ztp', true) }}"
-          vm_net_ip: "{{ ztp_node_ip }}"
+          vm_net_ip: "{{ ztp_node_ip | default('192.168.210.7') }}"
           cpu: "{{ ztp_node_cpu | default(8, true) }}"
           memory: "{{ ztp_node_memory | default(32, true) }}"
           vm_volume_size: "{{ ztp_node_disk_size | default(100, true) }}"

@@ -1,6 +1,6 @@
-working_directory: ~/
-ztp_cluster_name: test-sno
-ztp_cluster_domain: ocpdemo.labs
+working_directory:
+ztp_cluster_name:
+ztp_cluster_domain:
 ztp_network_cidr:
 ztp_node_name:
 ztp_node_ip:

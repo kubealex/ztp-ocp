@@ -1,21 +1,23 @@
 ---
 - name: ZTP Setup | Create VM and setup templates
   hosts: vm_host
+  become: true
   tasks:
     - name: Set home directory as fact for the user
       ansible.builtin.set_fact:
         home_dir: "{{ ansible_env.HOME }}"
+        ztp_home: "{{ working_directory | default('~/', true) }}"
 
     - name: Creating workspace
       ansible.builtin.file:
         state: directory
-        path: "{{ working_directory }}/{{ ztp_cluster_name }}"
+        path: "{{ ztp_home }}/{{ ztp_cluster_name }}"
         recurse: true
 
     - name: Copy terraform files on host
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/terraform"
-        path: "{{ working_directory }}/{{ ztp_cluster_name }}"
+        path: "{{ ztp_home }}/{{ ztp_cluster_name }}"
         mode: 0755
 
     - name: Create ssh keypair
@@ -26,7 +28,7 @@
     - name: Copy SSH keys in working directory
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/{{ item }}"
-        dest: "{{ working_directory }}/{{ cluster.name }}/{{ item }}"
+        dest: "{{ ztp_home }}/{{ cluster.name }}/{{ item }}"
         mode: 0755
       loop:
         - id_rsa_ocp_setup
@@ -34,7 +36,7 @@
 
     - name: Use TF project to ensure pool and network are defined
       community.general.terraform:
-        project_path: "{{ working_directory }}/{{ ztp_cluster_name }}/terraform/libvirt-resources"
+        project_path: "{{ ztp_home }}/{{ ztp_cluster_name }}/terraform/libvirt-resources"
         variables:
           domain: "{{ ztp_cluster_name | default('ztp-sno', true) }}.{{ ztp_cluster_domain | default('ocpdemo.labs', true) }}"
           network_cidr: ' ["{{ ztp_network_cidr | default("192.168.210.0/24", true) }}"]'
@@ -45,7 +47,7 @@
 
     - name: ZTP Setup | Provision spare node with Terraform
       community.general.terraform:
-        project_path: "{{ working_directory }}/{{ ztp_cluster_name }}/terraform/ztp-sno"
+        project_path: "{{ ztp_home }}/{{ ztp_cluster_name }}/terraform/ztp-sno"
         force_init: true
         variables:
           hostname: "{{ ztp_node_name | default('ztp-sno', true) }}"

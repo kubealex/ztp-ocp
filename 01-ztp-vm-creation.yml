@@ -65,4 +65,6 @@
 
     - name: Print machine id test
       ansible.builtin.debug:
-        var: tf_output
+        msg: |
+          Host MAC: "{{ tf_output.outputs.macs.value | join('') }}"
+          Host UUID: "{{ tf_output.outputs.id.value | join('') }}"

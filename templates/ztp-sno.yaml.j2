@@ -3,28 +3,28 @@
 apiVersion: ran.openshift.io/v1
 kind: SiteConfig
 metadata:
-  name: {{ ztp_cluster_name | quote }}
-  namespace: {{ ztp_cluster_name | quote }}
+  name: {{ ztp_cluster_name | default('ztp-sno', true) | quote }}
+  namespace: {{ ztp_cluster_name | default('ztp-sno', true) | quote }}
 spec:
-  baseDomain: {{ ztp_cluster_domain | quote }}
+  baseDomain: {{ ztp_cluster_domain | default('ocpdemo.labs', true) | quote }}
   pullSecretRef:
     name: "assisted-deployment-pull-secret"
   clusterImageSetNameRef: "openshift-4.11"
   sshPublicKey: {{ ztp_node_ssh_key | quote }}
   clusters:
-  - clusterName: {{ ztp_cluster_name | quote }}
+  - clusterName: {{ ztp_cluster_name | default('ztp-sno', true) | quote }}
     networkType: "OVNKubernetes"
     clusterLabels:
       common: true
       group-du-sno: ""
-      sites : {{ ztp_cluster_name | quote }}
+      sites : {{ ztp_cluster_name | default('ztp-sno', true) | quote }}
     clusterNetwork:
       - cidr: 10.128.0.0/14
         hostPrefix: 23
     serviceNetwork:
       - 172.30.0.0/16
     nodes:
-      - hostName: "{{ ztp_node_name }}.{{ ztp_cluster_domain }}"
+      - hostName: "{{ ztp_node_name | default('ztp-sno', true) }}.{{ ztp_cluster_domain }}"
         role: "master"
         bmcAddress: "redfish-virtualmedia+http://192.168.100.1:8000/redfish/v1/Systems/{{ node_uuid }}"
         bmcCredentialsName:

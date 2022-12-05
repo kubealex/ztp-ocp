@@ -4,8 +4,7 @@
   tasks:
     - name: Set home directory as fact for the user
       ansible.builtin.set_fact:
-        home_dir: "{{ ansible_env.HOME }}"
-        ztp_home: "{{ working_directory | default('~', true) }}"
+        ztp_home: "{{ working_directory | default(ansible_env.HOME, true) }}"
 
     - name: Creating workspace
       ansible.builtin.file:

@@ -1,0 +1,10 @@
+working_directory: ~/
+ztp_cluster_name: test-sno
+ztp_cluster_domain: ocpdemo.labs
+ztp_network_cidr:
+ztp_node_name:
+ztp_node_ip:
+ztp_node_cpu:
+ztp_node_memory:
+ztp_node_local_storage_enabled:
+ztp_node_local_storage_size:

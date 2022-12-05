@@ -1,0 +1,66 @@
+---
+- name: ZTP Setup | Create VM and setup templates
+  hosts: vm_host
+  tasks:
+    - name: Set home directory as fact for the user
+      ansible.builtin.set_fact:
+        home_dir: "{{ ansible_env.HOME }}"
+
+    - name: Creating workspace
+      ansible.builtin.file:
+        state: directory
+        path: "{{ working_directory }}/{{ ztp_cluster_name }}"
+        recurse: true
+
+    - name: Copy terraform files on host
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/terraform"
+        path: "{{ working_directory }}/{{ ztp_cluster_name }}"
+        mode: 0755
+
+    - name: Create ssh keypair
+      community.crypto.openssh_keypair:
+        path: "{{ playbook_dir }}/id_rsa_ocp_setup"
+      delegate_to: localhost
+
+    - name: Copy SSH keys in working directory
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/{{ item }}"
+        dest: "{{ working_directory }}/{{ cluster.name }}/{{ item }}"
+        mode: 0755
+      loop:
+        - id_rsa_ocp_setup
+        - id_rsa_ocp_setup.pub
+
+    - name: Use TF project to ensure pool and network are defined
+      community.general.terraform:
+        project_path: "{{ working_directory }}/{{ ztp_cluster_name }}/terraform/libvirt-resources"
+        variables:
+          domain: "{{ ztp_cluster_name | default('ztp-sno', true) }}.{{ ztp_cluster_domain | default('ocpdemo.labs', true) }}"
+          network_cidr: ' ["{{ ztp_network_cidr | default("192.168.210.0/24", true) }}"]'
+          cluster_name: "{{ ztp_cluster_name | default('ztp-sno', true) }}"
+          dns: "{{ ztp_node_ip | default('192.168.210.7') }}"
+        force_init: true
+        state: present
+
+    - name: ZTP Setup | Provision spare node with Terraform
+      community.general.terraform:
+        project_path: "{{ working_directory }}/{{ ztp_cluster_name }}/terraform/ztp-sno"
+        force_init: true
+        variables:
+          hostname: "{{ ztp_node_name | default('ztp-sno', true) }}"
+          libvirt_network: "{{ ztp_cluster_name | default('ztp', true) }}"
+          libvirt_pool: "{{ ztp_cluster_name | default('ztp', true) }}"
+          vm_net_ip: "{{ ztp_node_ip }}"
+          cpu: "{{ ztp_node_cpu | default(8, true) }}"
+          memory: "{{ ztp_node_memory | default(32, true) }}"
+          vm_volume_size: "{{ ztp_node_disk_size | default(100, true) }}"
+          vm_mac_address: "{{ ztp_node_mac_address }}"
+          local_volume_size: "{{ ztp_node_local_storage_size | default(50, true) }}"
+          local_volume_enabled: "{{ ztp_node_local_storage_enabled | default(false, true) }}"
+        state: present
+      register: tf_output
+
+    - name: Print machine id
+      ansible.builtin.debug:
+        var: tf_output

@@ -44,7 +44,10 @@ spec:
                 state: up
                 ipv4:
                   enabled: true
-                  dhcp: true
+                  dhcp: false
+                  address:
+                    - ip: {{ ztp_node_ip | default('192.168.210.7', true) }}
+                      prefix-length: 32
                   auto-dns: true
                   auto-gateway: true
                   auto-routes: true

@@ -89,6 +89,12 @@
         - siteconfig-generator
         - KlusterletAddonConfig.yaml
 
+    - name: Create dummy folder
+      ansible.builtin.file:
+        path: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/extra-manifest"
+        state: directory
+        mode: 0755
+
     - name: Generate manifests
       ansible.builtin.shell:
         cmd: ./siteconfig-generator {{ ztp_cluster_name | default('ztp-sno', true) }}.yml > {{ ztp_cluster_name | default('ztp-sno', true) }}-manifests.yml

@@ -91,4 +91,5 @@
 
     - name: Generate manifests
       ansible.builtin.shell:
-        ./siteconfig-generator {{ ztp_cluster_name | default('ztp-sno', true) }}.yml > {{ ztp_cluster_name | default('ztp-sno', true) }}-manifests.yml
+        cmd: ./siteconfig-generator {{ ztp_cluster_name | default('ztp-sno', true) }}.yml > {{ ztp_cluster_name | default('ztp-sno', true) }}-manifests.yml
+        chdir: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}"

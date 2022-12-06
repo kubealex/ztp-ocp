@@ -14,14 +14,18 @@ spec:
   - clusterName: {{ ztp_cluster_name | default('ztp-sno', true) | quote }}
     networkType: "OVNKubernetes"
     clusterLabels:
-      common: true
-      group-du-sno: ""
       sites : {{ ztp_cluster_name | default('ztp-sno', true) | quote }}
     clusterNetwork:
       - cidr: 10.128.0.0/14
         hostPrefix: 23
     serviceNetwork:
       - 172.30.0.0/16
+    additionalNTPSources:
+      - time.google.com
+      - time1.google.com
+      - time2.google.com
+    crTemplates:
+      KlusterletAddonConfig: "KlusterletAddonConfig.yaml"
     nodes:
       - hostName: "{{ ztp_node_name | default('ztp-sno', true) }}"
         role: "master"
@@ -30,9 +34,6 @@ spec:
           name: "baremetal-creds"
         bootMACAddress: {{ ztp_node_mac_address | default(node_mac, true) }}
         bootMode: "UEFI"
-        rootDeviceHints:
-          wwn: "0x11111000000asd123"
-        cpuset: "0-1,52-53"
         nodeNetwork:
           interfaces:
             - name: enp1s0

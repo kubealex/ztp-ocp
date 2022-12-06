@@ -77,5 +77,18 @@
     - name: Fire up site config template
       ansible.builtin.template:
         src: ztp-sno.yaml.j2
-        dest: "{{ playbook_dir }}/ztp.yml"
+        dest: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/{{ ztp_cluster_name | default('ztp-sno', true) }}.yml"
         mode: 0755
+
+    - name: Copy siteconfig utility and Klusterlet patch to remote system
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/"
+        mode: 0755
+      loop:
+        - siteconfig-generator
+        - KlusterletAddonConfig.yaml
+
+    - name: Generate manifests
+      ansible.builtin.shell:
+        ./siteconfig-generator {{ ztp_cluster_name | default('ztp-sno', true) }}.yml > {{ ztp_cluster_name | default('ztp-sno', true) }}-manifests.yml

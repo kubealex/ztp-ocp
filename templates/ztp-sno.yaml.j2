@@ -23,7 +23,7 @@ spec:
     serviceNetwork:
       - 172.30.0.0/16
     nodes:
-      - hostName: "{{ ztp_node_name | default('ztp-sno', true) }}.{{ ztp_cluster_domain | default('ocpdemo.labs', true) }}"
+      - hostName: "{{ ztp_node_name | default('ztp-sno', true) }}
         role: "master"
         bmcAddress: "redfish-virtualmedia+http://192.168.100.1:8000/redfish/v1/Systems/{{ node_uuid }}"
         bmcCredentialsName:
@@ -35,11 +35,11 @@ spec:
         cpuset: "0-1,52-53"
         nodeNetwork:
           interfaces:
-            - name: enp3s0
+            - name: enp1s0
               macAddress: {{ ztp_node_mac_address | default(node_mac, true) }}
           config:
             interfaces:
-              - name: enp3s0
+              - name: enp1s0
                 type: ethernet
                 state: up
                 ipv4:
@@ -48,8 +48,15 @@ spec:
                   address:
                     - ip: {{ ztp_node_ip | default('192.168.210.7', true) }}
                       prefix-length: 32
-                  auto-dns: true
-                  auto-gateway: true
-                  auto-routes: true
                 ipv6:
                   enabled: false
+            dns-resolver:
+              config:
+                server:
+                - {{ ztp_network_cidr | default('192.168.210.0/24', true) | ansible.utils.ipaddr('next_usable') }}
+            routes:
+              config:
+              - destination: 0.0.0.0/0
+                next-hop-interface: enp1s0
+                next-hop-address: {{ ztp_network_cidr | default('192.168.210.0/24', true) | ansible.utils.ipaddr('next_usable') }}
+                table-id: 254

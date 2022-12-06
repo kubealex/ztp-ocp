@@ -27,7 +27,7 @@ resource "libvirt_network" "ocp_network" {
   addresses = var.network_cidr
 
   dhcp {
-    enabled = false
+    enabled = true
   }
 
   dns {

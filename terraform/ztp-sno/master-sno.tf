@@ -54,7 +54,7 @@ resource "libvirt_domain" "master" {
    }
 
   network_interface {
-    # hostname = var.hostname
+    hostname = var.hostname
     network_name = var.libvirt_network
     mac = var.vm_mac_address
     addresses = [ var.vm_net_ip ]

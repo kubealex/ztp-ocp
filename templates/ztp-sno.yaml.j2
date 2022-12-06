@@ -18,6 +18,8 @@ spec:
     clusterNetwork:
       - cidr: 10.128.0.0/14
         hostPrefix: 23
+    machineNetwork:
+      - cidr: {{ ztp_network_cidr | default('192.168.210.0/24', true) }}
     serviceNetwork:
       - 172.30.0.0/16
     additionalNTPSources:
@@ -45,19 +47,23 @@ spec:
                 state: up
                 ipv4:
                   enabled: true
-                  dhcp: false
-                  address:
-                    - ip: {{ ztp_node_ip | default('192.168.210.7', true) }}
-                      prefix-length: 32
-                ipv6:
-                  enabled: false
-            dns-resolver:
-              config:
-                server:
-                - {{ ztp_network_cidr | default('192.168.210.0/24', true) | ansible.utils.ipaddr('next_usable') }}
-            routes:
-              config:
-              - destination: 0.0.0.0/0
-                next-hop-interface: enp1s0
-                next-hop-address: {{ ztp_network_cidr | default('192.168.210.0/24', true) | ansible.utils.ipaddr('next_usable') }}
-                table-id: 254
+                  dhcp: true
+                  auto-dns: true
+                  auto-gateway: true
+                  auto-route: true
+
+#                  address:
+#                    - ip: {{ ztp_node_ip | default('192.168.210.7', true) }}
+#                      prefix-length: 32
+#                ipv6:
+#                  enabled: false
+#            dns-resolver:
+#              config:
+#                server:
+#                - {{ ztp_network_cidr | default('192.168.210.0/24', true) | ansible.utils.ipaddr('next_usable') }}
+#            routes:
+#              config:
+#              - destination: 0.0.0.0/0
+#                next-hop-interface: enp1s0
+#                next-hop-address: {{ ztp_network_cidr | default('192.168.210.0/24', true) | ansible.utils.ipaddr('next_usable') }}
+#                table-id: 254

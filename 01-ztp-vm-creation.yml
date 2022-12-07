@@ -162,4 +162,5 @@
     - name: ZTP Setup | Retrieve manifests
       ansible.builtin.fetch:
         src: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}//{{ ztp_cluster_name | default('ztp-sno', true) }}-manifests.tgz"
-        dest: "{{ ztp_cluster_name | default('ztp-sno', true) }}-manifests.tgz"
+        dest: "{{ playbook_dir }}"
+        flat: true

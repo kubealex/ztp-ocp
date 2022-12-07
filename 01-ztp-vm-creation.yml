@@ -130,9 +130,12 @@
 
     - name: ZTP Setup | Copy siteconfig utility to remote system
       ansible.builtin.copy:
-        src: "siteconfig-generator"
+        src: "{{ item }}"
         dest: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/"
         mode: 0755
+      loop:
+        - siteconfig-generator
+        - KlusterletAddonConfig.yaml
 
     - name: ZTP Setup | Copy siteconfig utility and Klusterlet patch to remote system
       ansible.builtin.copy:
@@ -148,5 +151,15 @@
 
     - name: ZTP Setup | Generate manifests
       ansible.builtin.shell:
-        cmd: ./siteconfig-generator gitops/{{ ztp_cluster_name | default('ztp-sno', true) }}.yml > {{ ztp_cluster_name | default('ztp-sno', true) }}-manifests.yml
+        cmd: ./siteconfig-generator gitops/{{ ztp_cluster_name | default('ztp-sno', true) }}.yml > gitops/{{ ztp_cluster_name | default('ztp-sno', true) }}-manifests.yml
         chdir: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}"
+
+    - name: ZTP Setup | Compress manifests to fetch them
+      community.general.archive:
+        path: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/gitops"
+        dest: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}//{{ ztp_cluster_name | default('ztp-sno', true) }}-manifests.tgz"
+
+    - name: ZTP Setup | Retrieve manifests
+      ansible.builtin.fetch:
+        src: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}//{{ ztp_cluster_name | default('ztp-sno', true) }}-manifests.tgz"
+        dest: "{{ ztp_cluster_name | default('ztp-sno', true) }}-manifests.tgz"

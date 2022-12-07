@@ -8,3 +8,6 @@ ztp_node_cpu:
 ztp_node_memory:
 ztp_node_local_storage_enabled:
 ztp_node_local_storage_size:
+ztp_bmc_username:
+ztp_bmc_password:
+ztp_pull_secret:

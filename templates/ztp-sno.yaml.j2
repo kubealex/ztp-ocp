@@ -7,7 +7,7 @@ metadata:
 spec:
   baseDomain: {{ ztp_cluster_domain | default('ocpdemo.labs', true) | quote }}
   pullSecretRef:
-    name: "assisted-deployment-pull-secret"
+    name: "{{ ztp_cluster_name | default('ztp-sno', true) }}-pull-secret"
   clusterImageSetNameRef: "openshift-4.11"
   sshPublicKey: {{ ztp_node_ssh_key | quote }}
   clusters:
@@ -33,7 +33,7 @@ spec:
         role: "master"
         bmcAddress: "redfish-virtualmedia+http://192.168.100.1:8000/redfish/v1/Systems/{{ node_uuid }}"
         bmcCredentialsName:
-          name: "baremetal-creds"
+          name: "{{ ztp_cluster_name | default('ztp-sno', true) }}-bmc-credentials"
         bootMACAddress: {{ ztp_node_mac_address | default(node_mac, true) }}
         bootMode: "UEFI"
         nodeNetwork:
@@ -51,19 +51,3 @@ spec:
                   auto-dns: true
                   auto-gateway: true
                   auto-route: true
-
-#                  address:
-#                    - ip: {{ ztp_node_ip | default('192.168.210.7', true) }}
-#                      prefix-length: 32
-#                ipv6:
-#                  enabled: false
-#            dns-resolver:
-#              config:
-#                server:
-#                - {{ ztp_network_cidr | default('192.168.210.0/24', true) | ansible.utils.ipaddr('next_usable') }}
-#            routes:
-#              config:
-#              - destination: 0.0.0.0/0
-#                next-hop-interface: enp1s0
-#                next-hop-address: {{ ztp_network_cidr | default('192.168.210.0/24', true) | ansible.utils.ipaddr('next_usable') }}
-#                table-id: 254

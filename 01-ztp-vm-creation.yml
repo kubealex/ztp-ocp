@@ -90,7 +90,7 @@
         - NetworkManager
         - dnsmasq
         - libvirtd
-      become: true.
+      become: true
 
     - name: Use outputs to trigger template
       ansible.builtin.set_fact:

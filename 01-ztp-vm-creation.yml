@@ -40,14 +40,14 @@
     - name: Configure NetworkManager for local DNS
       ansible.builtin.copy:
         src: files/localdns.conf
-        dest: /etc/NetworkManager/conf.d/{{ cluster.name }}-localdns.conf
+        dest: /etc/NetworkManager/conf.d/{{ ztp_cluster_name | default('ztp-sno', true) }}-localdns.conf
         mode: 0755
       become: true
 
     - name: Configure NetworkManager for libvirt network
       ansible.builtin.template:
         src: templates/libvirt_dnsmasq_sno.j2
-        dest: "/etc/NetworkManager/dnsmasq.d/{{ cluster.name }}-libvirt_dnsmasq.conf"
+        dest: "/etc/NetworkManager/dnsmasq.d/{{ ztp_cluster_name | default('ztp-sno', true) }}-libvirt_dnsmasq.conf"
         mode: 0755
       become: true
 

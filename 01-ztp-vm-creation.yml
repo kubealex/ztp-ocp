@@ -121,6 +121,12 @@
         dest: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/gitops/{{ ztp_cluster_name | default('ztp-sno', true) }}-pull-secret.yml"
         mode: 0755
 
+    - name: Fire up kustomization
+      ansible.builtin.template:
+        src: kustomization.yml.j2
+        dest: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/gitops/kustomization.yaml"
+        mode: 0755
+
     - name: Copy siteconfig utility to remote system
       ansible.builtin.copy:
         src: "siteconfig-generator"

@@ -1,0 +1,38 @@
+---
+- name: ZTP Setup | Create VM and setup templates
+  hosts: vm_host
+  become: true
+  tasks:
+    - name: ZTP Setup | Cleanup | Set home directory as fact for the user
+      ansible.builtin.set_fact:
+        ztp_home: "{{ working_directory | default(ansible_env.HOME, true) }}"
+
+    - name: ZTP Setup | Cleanup | Configure NetworkManager for local DNS
+      ansible.builtin.file:
+        path: "{{ item }}"
+      loop:
+        - /etc/NetworkManager/conf.d/{{ ztp_cluster_name | default('ztp-sno', true) }}-localdns.conf
+        - "/etc/NetworkManager/dnsmasq.d/{{ ztp_cluster_name | default('ztp-sno', true) }}-libvirt_dnsmasq.conf"
+
+    - name: ZTP Setup | Cleanup | Use TF project to ensure pool and network are defined
+      community.general.terraform:
+        project_path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/terraform/libvirt-resources"
+        - "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/terraform/ztp-sno"
+
+    - name: ZTP Setup | Cleanup | Restart net-services
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: restarted
+      loop:
+        - NetworkManager
+        - dnsmasq
+        - libvirtd
+
+    - name: ZTP Setup | Cleanup | Creating workspace
+      ansible.builtin.file:
+        path: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}"
+        recurse: true
+        state: absent

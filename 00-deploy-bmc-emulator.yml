@@ -6,6 +6,10 @@
       ansible.builtin.package_facts:
         manager: auto
 
+    - name: Set home directory for user
+      ansible.builtin.set_fact:
+        sushy_home: "{{ ansible_env.HOME }}"
+
     - name: BMC sushy-tools Setup | Fail if podman is not present
       ansible.builtin.fail:
         msg: "Podman must be present to run"
@@ -47,8 +51,8 @@
         name: sushy-tools
         volume:
           - /var/run/libvirt:/var/run/libvirt:Z
-          - "{{ ansible_env.HOME }}/sushy-tools/sushy-tools.conf:/etc/sushy/sushy-emulator.conf:Z"
-          - "{{ ansible_env.HOME }}/sushy-tools/sushy-htpasswd:/etc/sushy/htpasswd:Z"
+          - "{{ sushy_home }}/sushy-tools/sushy-tools.conf:/etc/sushy/sushy-emulator.conf:Z"
+          - "{{ sushy_home }}/sushy-tools/sushy-htpasswd:/etc/sushy/htpasswd:Z"
         privileged: true
         image: quay.io/metal3-io/sushy-tools:latest
         ports:

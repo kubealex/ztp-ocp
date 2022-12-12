@@ -44,7 +44,7 @@
 
     - name: BMC sushy-tools Setup | Create sushy-tools container
       containers.podman.podman_container:
-        name: sushy-emulator
+        name: sushy-tools
         volume:
           - /var/run/libvirt:/var/run/libvirt:Z
           - "{{ ansible_env.HOME }}/sushy-tools/sushy-tools.conf:/etc/sushy/sushy-emulator.conf:Z"

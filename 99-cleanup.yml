@@ -19,8 +19,8 @@
         project_path: "{{ item }}"
         state: absent
       loop:
-        - "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/terraform/libvirt-resources"
         - "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/terraform/ztp-sno"
+        - "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/terraform/libvirt-resources"
       become: true
 
     - name: ZTP Setup | Cleanup | Restart net-services

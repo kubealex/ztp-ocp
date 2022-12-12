@@ -41,13 +41,13 @@
         provider: selfsigned
 
 
-    - name: BMC sushy-tools Setup | Create gitea container
+    - name: BMC sushy-tools Setup | Create sushy-tools container
       containers.podman.podman_container:
         name: sushy-emulator
         volume:
           - /var/run/libvirt:/var/run/libvirt:Z
-          - ~/sushy-tools/sushy-tools.conf:/etc/sushy/sushy-emulator.conf:Z
-          - ~/sushy-tools/sushy-htpasswd:/etc/sushy/htpasswd:Z
+          - "{{ ansible_env.HOME }}/sushy-tools/sushy-tools.conf:/etc/sushy/sushy-emulator.conf:Z"
+          - "{{ ansible_env.HOME }}/sushy-tools/sushy-htpasswd:/etc/sushy/htpasswd:Z"
         privileged: true
         image: quay.io/metal3-io/sushy-tools:latest
         ports:

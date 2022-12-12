@@ -54,3 +54,4 @@
           - "{{ sushy_port | default(8000, true) }}:8000"
         env:
           SUSHY_EMULATOR_CONFIG: /etc/sushy/sushy-emulator.conf
+      become: true

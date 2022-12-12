@@ -28,6 +28,7 @@
         path: ~/sushy-tools/sushy-htpasswd
         name: "{{ ztp_bmc_username }}"
         password: "{{ ztp_bmc_password }}"
+        crypt_scheme: bcrypt
         mode: 0640
 
     - name: BMC sushy-tools Setup | Generate private key for SSL certificate

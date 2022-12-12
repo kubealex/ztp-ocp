@@ -1,7 +1,6 @@
 ---
 - name: ZTP Setup | Create VM and setup templates
   hosts: vm_host
-  become: true
   tasks:
     - name: ZTP Setup | Cleanup | Set home directory as fact for the user
       ansible.builtin.set_fact:
@@ -13,6 +12,7 @@
       loop:
         - /etc/NetworkManager/conf.d/{{ ztp_cluster_name | default('ztp-sno', true) }}-localdns.conf
         - "/etc/NetworkManager/dnsmasq.d/{{ ztp_cluster_name | default('ztp-sno', true) }}-libvirt_dnsmasq.conf"
+      become: true
 
     - name: ZTP Setup | Cleanup | Use TF project to ensure pool and network are defined
       community.general.terraform:
@@ -21,6 +21,7 @@
       loop:
         - "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/terraform/libvirt-resources"
         - "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/terraform/ztp-sno"
+      become: true
 
     - name: ZTP Setup | Cleanup | Restart net-services
       ansible.builtin.service:
@@ -30,6 +31,7 @@
         - NetworkManager
         - dnsmasq
         - libvirtd
+      become: true
 
     - name: ZTP Setup | Cleanup | Creating workspace
       ansible.builtin.file:

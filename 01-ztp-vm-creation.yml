@@ -4,7 +4,7 @@
   tasks:
     - name: ZTP Setup | Pre-config | Set home directory as fact for the user
       ansible.builtin.set_fact:
-        ztp_home: "{{ working_directory | default(ansible_env.HOME, true) }}"
+        ztp_home: "{{ ztp_working_directory | default(ansible_env.HOME, true) }}"
 
     - name: ZTP Setup | Pre-config | Creating workspace
       ansible.builtin.file:
@@ -58,7 +58,7 @@
           domain: "{{ ztp_cluster_name | default('ztp-sno', true) }}.{{ ztp_cluster_domain | default('ocpdemo.labs', true) }}"
           network_cidr: ' ["{{ ztp_network_cidr | default("192.168.210.0/24", true) }}"]'
           cluster_name: "{{ ztp_cluster_name | default('ztp', true) }}"
-          dns: "{{ ztp_node_ip | default('192.168.210.7') }}"
+          dns: "{{ ztp_node_ip | default('192.168.210.2') }}"
         force_init: true
         state: present
       become: true
@@ -71,7 +71,7 @@
           hostname: "{{ ztp_node_name | default('ztp-sno', true) }}"
           libvirt_network: "{{ ztp_cluster_name | default('ztp', true) }}"
           libvirt_pool: "{{ ztp_cluster_name | default('ztp', true) }}"
-          vm_net_ip: "{{ ztp_node_ip | default('192.168.210.7', true) }}"
+          vm_net_ip: "{{ ztp_node_ip | default('192.168.210.2', true) }}"
           cpu: "{{ ztp_node_cpu | default(8, true) }}"
           memory: "{{ ztp_node_memory | default(32, true) }}"
           vm_volume_size: "{{ ztp_node_disk_size | default(100, true) }}"

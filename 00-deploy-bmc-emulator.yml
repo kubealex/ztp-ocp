@@ -23,12 +23,31 @@
         dest: ~/sushy-tools/sushy-tools.conf
         mode: 0755
 
+    - name: BMC sushy-tools Setup | Add BMC user configuration
+      community.general.htpasswd:
+        path: ~/sushy-tools/sushy-htpasswd
+        name: "{{ ztp_bmc_username }}"
+        password: "{{ ztp_bmc_password }}"
+        mode: 0640
+
+    - name: BMC sushy-tools Setup | Generate private key for SSL certificate
+      community.crypto.openssl_privatekey:
+        path: ~/sushy-tools/cert.key
+
+    - name: BMC sushy-tools Setup | Create simple self-signed certificate
+      community.crypto.x509_certificate:
+        path: ~/sushy-tools/cert.pem
+        privatekey_path: ~/sushy-tools/cert.key
+        provider: selfsigned
+
+
     - name: BMC sushy-tools Setup | Create gitea container
       containers.podman.podman_container:
         name: sushy-emulator
         volume:
           - /var/run/libvirt:/var/run/libvirt:Z
           - ~/sushy-tools/sushy-tools.conf:/etc/sushy/sushy-emulator.conf:Z
+          - ~/sushy-tools/sushy-htpasswd:/etc/sushy/htpasswd:Z
         privileged: true
         image: quay.io/metal3-io/sushy-tools:latest
         ports:

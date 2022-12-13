@@ -31,7 +31,7 @@ spec:
     nodes:
       - hostName: "{{ ztp_node_name | default('ztp-sno', true) }}"
         role: "master"
-        bmcAddress: "redfish-virtualmedia+https://{{ ztp_bmc_host | default('192.168.100.1', true) }}:{{ ztp_bmc_port | default(8000, true) }}/redfish/v1/Systems/{{ node_uuid }}"
+        bmcAddress: "redfish-virtualmedia+https://{{ ztp_bmc_host | default(hostvars[inventory_hostname].ansible_default_ipv4.address, true) }}:{{ ztp_bmc_port | default(8000, true) }}/redfish/v1/Systems/{{ node_uuid }}"
         bmcCredentialsName:
           name: "{{ ztp_cluster_name | default('ztp-sno', true) }}-bmc-credentials"
         bootMACAddress: {{ ztp_node_mac_address | default(node_mac, true) }}

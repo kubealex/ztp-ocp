@@ -3,6 +3,7 @@
   hosts: vm_host
   roles:
     - role: ansible-sushy-tools-podman
+      sushy_host: "{{ ztp_bmc_host }}"
       sushy_port: "{{ ztp_bmc_port }}"
       sushy_admin_user: "{{ ztp_bmc_username }}"
       sushy_admin_password: "{{ ztp_bmc_password }}"

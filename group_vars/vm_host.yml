@@ -10,4 +10,6 @@ ztp_node_local_storage_enabled:
 ztp_node_local_storage_size:
 ztp_bmc_username:
 ztp_bmc_password:
+ztp_bmc_port:
+ztp_bmc_host:
 ztp_pull_secret:

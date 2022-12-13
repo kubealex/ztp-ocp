@@ -52,7 +52,6 @@
         volume:
           - /var/run/libvirt:/var/run/libvirt:Z
           - "{{ sushy_home }}/sushy-tools:/etc/sushy:Z"
-          - "{{ sushy_home }}/sushy-tools/sushy-htpasswd:/etc/sushy/htpasswd:Z"
         privileged: true
         image: quay.io/metal3-io/sushy-tools:latest
         ports:

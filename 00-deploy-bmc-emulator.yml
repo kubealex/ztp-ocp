@@ -1,62 +1,8 @@
 ---
 - name: BMC sushy-tools Setup | Deploy sushy-tools emulator
   hosts: vm_host
-  tasks:
-    - name: BMC sushy-tools Setup | Gather the package facts
-      ansible.builtin.package_facts:
-        manager: auto
-
-    - name: Set home directory for user
-      ansible.builtin.set_fact:
-        sushy_home: "{{ ansible_env.HOME }}"
-
-    - name: BMC sushy-tools Setup | Fail if podman is not present
-      ansible.builtin.fail:
-        msg: "Podman must be present to run"
-      when: ansible_facts.packages['podman'] is undefined
-
-    - name: BMC sushy-tools Setup | Create folder for sushy-tools config
-      ansible.builtin.file:
-        path: ~/sushy-tools
-        mode: 0755
-        state: directory
-
-    - name: BMC sushy-tools Setup | Fire sushy-tools configuration
-      ansible.builtin.template:
-        src: sushy-tools.conf.j2
-        dest: ~/sushy-tools/sushy-emulator.conf
-        mode: 0755
-
-    - name: BMC sushy-tools Setup | Add BMC user configuration
-      community.general.htpasswd:
-        path: ~/sushy-tools/htpasswd
-        name: "{{ ztp_bmc_username }}"
-        password: "{{ ztp_bmc_password }}"
-        crypt_scheme: bcrypt
-        mode: 0640
-
-    - name: BMC sushy-tools Setup | Generate private key for SSL certificate
-      community.crypto.openssl_privatekey:
-        path: ~/sushy-tools/cert.key
-
-    - name: BMC sushy-tools Setup | Create simple self-signed certificate
-      community.crypto.x509_certificate:
-        path: ~/sushy-tools/cert.pem
-        privatekey_path: ~/sushy-tools/cert.key
-        provider: selfsigned
-
-
-    - name: BMC sushy-tools Setup | Create sushy-tools container
-      containers.podman.podman_container:
-        name: sushy-tools
-        volume:
-          - /var/run/libvirt:/var/run/libvirt:Z
-          - "{{ sushy_home }}/sushy-tools:/etc/sushy:Z"
-        privileged: true
-        image: quay.io/metal3-io/sushy-tools:latest
-        ports:
-          - "{{ sushy_port | default(8000, true) }}:8000"
-        env:
-          SUSHY_EMULATOR_CONFIG: /etc/sushy/sushy-emulator.conf
-        entrypoint: sushy-emulator
-      become: true
+  roles:
+    - role: ansible-sushy-tools-podman
+      sushy_port: "{{ ztp_bmc_port }}"
+      sushy_admin_user: "{{ ztp_bmc_username }}"
+      sushy_admin_password: "{{ ztp_bmc_password }}"

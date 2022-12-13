@@ -1,0 +1,10 @@
+---
+collections:
+  - ansible.posix
+  - ansible.utils
+  - community.crypto
+  - community.general
+
+rolse:
+  - name: ansible-sushy-tools-podman
+    src: https://github.com/kubealex/ansible-sushy-tools-podman.git

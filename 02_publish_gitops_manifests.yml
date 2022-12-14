@@ -2,6 +2,10 @@
 - name: Ansible Git | Manage git operations
   hosts: vm_host
   tasks:
+    - name: ZTP Setup | Pre-config | Set home directory as fact for the user
+      ansible.builtin.set_fact:
+        ztp_home: "{{ ztp_working_directory | default(ansible_env.HOME, true) }}"
+
     - name: Clone cluster GitOps repo
       ansible.builtin.include_role:
         name: ansible-git-role

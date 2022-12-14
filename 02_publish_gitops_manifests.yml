@@ -1,0 +1,28 @@
+---
+- name: Ansible Git | Manage git operations
+  hosts: vm_host
+  tasks:
+    - name: Clone cluster GitOps repo
+      ansible.builtin.include_role:
+        name: ansible-git-role
+      vars:
+        git_action: clone
+
+    - name: Create cluster directory in newly cloned repo
+      ansible.builtin.file:
+        state: directory
+        path: "{{ git_repo_path }}/{{ ztp_cluster_name }}"
+        mode: 0755
+
+    - name: Move manifest to cloned repo
+      ansible.builtin.copy:
+        remote_src: true
+        src: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/gitops/"
+        dest: "{{ git_repo_path }}/{{ ztp_cluster_name }}"
+
+    - name: Add cluster {{ ztp_cluster_name }} to the repo
+      ansible.builtin.include_role:
+        name: ansible-git-role
+      vars:
+        git_action: push
+        git_commit_message: "Added {{ ztp_cluster_name }} to GitOps repo"

@@ -13,3 +13,11 @@ ztp_bmc_password:
 ztp_bmc_port:
 ztp_bmc_host:
 ztp_pull_secret:
+
+git_action:
+git_branch:
+git_commit_message:
+git_repo_url:
+git_repo_token:
+git_repo_username:
+git_working_dir:

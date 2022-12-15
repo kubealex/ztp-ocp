@@ -38,3 +38,4 @@
         path: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}"
         recurse: true
         state: absent
+      become: true

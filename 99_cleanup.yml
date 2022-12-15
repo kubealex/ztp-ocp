@@ -6,15 +6,16 @@
       ansible.builtin.set_fact:
         ztp_home: "{{ working_directory | default(ansible_env.HOME, true) }}"
 
-    - name: ZTP Setup | Cleanup | Configure NetworkManager for local DNS
+    - name: ZTP Setup | Cleanup | Remove KVM dnsmasq config
       ansible.builtin.file:
         path: "{{ item }}"
+        state: absent
       loop:
         - /etc/NetworkManager/conf.d/{{ ztp_cluster_name | default('ztp-sno', true) }}-localdns.conf
         - "/etc/NetworkManager/dnsmasq.d/{{ ztp_cluster_name | default('ztp-sno', true) }}-libvirt_dnsmasq.conf"
       become: true
 
-    - name: ZTP Setup | Cleanup | Use TF project to ensure pool and network are defined
+    - name: ZTP Setup | Cleanup | Destroy terraform resources
       community.general.terraform:
         project_path: "{{ item }}"
         state: absent
@@ -33,9 +34,8 @@
         - libvirtd
       become: true
 
-    - name: ZTP Setup | Cleanup | Creating workspace
+    - name: ZTP Setup | Cleanup | Delete workspace
       ansible.builtin.file:
         path: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}"
-        recurse: true
         state: absent
       become: true

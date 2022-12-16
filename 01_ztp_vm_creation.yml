@@ -100,8 +100,9 @@
 
     - name: ZTP Setup | Manifests | Create gitops folder
       ansible.builtin.file:
-        path: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/gitops"
+        path: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/gitops/output"
         state: directory
+        recurse: true
         mode: 0755
 
     - name: ZTP Setup | Manifests | Fire up site config template
@@ -151,7 +152,7 @@
 
     - name: ZTP Setup | Manifests | Generate manifests
       ansible.builtin.shell:
-        cmd: ./siteconfig-generator gitops/{{ ztp_cluster_name | default('ztp-sno', true) }}.yml > gitops/{{ ztp_cluster_name | default('ztp-sno', true) }}-manifests.yml
+        cmd: ./siteconfig-generator gitops/{{ ztp_cluster_name | default('ztp-sno', true) }}.yml > gitops/out/{{ ztp_cluster_name | default('ztp-sno', true) }}-manifests.yml
         chdir: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}"
 
     - name: ZTP Setup | Manifests | Compress manifests to fetch them

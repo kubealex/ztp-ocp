@@ -5,6 +5,6 @@ collections:
   - community.crypto
   - community.general
 
-rolse:
+roles:
   - name: ansible-sushy-tools-podman
     src: https://github.com/kubealex/ansible-sushy-tools-podman.git

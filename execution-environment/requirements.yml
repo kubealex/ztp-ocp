@@ -4,6 +4,7 @@ collections:
   - ansible.utils
   - community.crypto
   - community.general
+  - containers.podman
 
 roles:
   - name: ansible-sushy-tools-podman

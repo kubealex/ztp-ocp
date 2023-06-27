@@ -35,7 +35,7 @@ resource "libvirt_domain" "master" {
   name = var.hostname
   memory = var.memory*1024
   machine = "q35"
-  firmware = "/usr/share/edk2/ovmf/OVMF_CODE.secboot.fd"
+  firmware = "/usr/share/edk2/ovmf/OVMF_CODE.fd"
   vcpu = var.cpu
 
   cpu {
@@ -83,7 +83,7 @@ terraform {
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.7.0"
+      version = "0.7.1"
     }
   }
 }

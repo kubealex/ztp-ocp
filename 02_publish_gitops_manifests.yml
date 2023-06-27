@@ -8,7 +8,7 @@
 
     - name: Clone cluster GitOps repo
       ansible.builtin.include_role:
-        name: ansible-git-role
+        name: role_git_helper
       vars:
         git_action: clone
 

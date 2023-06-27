@@ -15,18 +15,18 @@
     - name: Create cluster directory in newly cloned repo
       ansible.builtin.file:
         state: directory
-        path: "{{ git_repo_path }}/{{ ztp_cluster_name }}"
+        path: "{{ git_repo_path }}/{{ ztp_cluster_name | default('ztp-sno', true) }}"
         mode: 0755
 
     - name: Move manifest to cloned repo
       ansible.builtin.copy:
         remote_src: true
         src: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/gitops/"
-        dest: "{{ git_repo_path }}/{{ ztp_cluster_name }}"
+        dest: "{{ git_repo_path }}/{{ ztp_cluster_name | default('ztp-sno', true) }}"
 
-    - name: Add cluster {{ ztp_cluster_name }} to the repo
+    - name: Add cluster {{ ztp_cluster_name | default('ztp-sno', true) }} to the repo
       ansible.builtin.include_role:
         name: ansible-git-role
       vars:
         git_action: push
-        git_commit_message: "Added {{ ztp_cluster_name }} to GitOps repo"
+        git_commit_message: "Added {{ ztp_cluster_name | default('ztp-sno', true) }} to GitOps repo"

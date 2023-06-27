@@ -6,4 +6,4 @@ roles:
   - name: ansible-sushy-tools-podman
     src: https://github.com/kubealex/ansible-sushy-tools-podman.git
   - name: role_git_helper
-    src: git@github.com:kubealex/role_git_helper.git
+    src: https://github.com/kubealex/role_git_helper.git

@@ -1,9 +1,9 @@
 # variables that can be overriden
 variable "domain" { default = "ztpdemo.labs" }
-variable "dns" { default = "192.168.210.7" }
+variable "dns" { default = "192.168.235.7" }
 variable "network_cidr" {
   type = list
-  default = ["192.168.210.0/24"]
+  default = ["192.168.235.0/24"]
 }
 variable "cluster_name" { default = "ztp" }
 variable "libvirt_pool_path" { default = "/var/lib/libvirt/images" }

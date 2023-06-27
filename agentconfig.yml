@@ -22,8 +22,8 @@ spec:
       requests:
         storage: 50Gi
   osImages:
-    - openshiftVersion: "4.12.2"
+    - openshiftVersion: "4.12.21"
       version: "4.12"
-      url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.12/4.12.2/rhcos-4.12.2-x86_64-live.x86_64.iso"
-      rootFSUrl: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.12/4.12.2/rhcos-4.12.2-x86_64-live-rootfs.x86_64.img"
+      url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.12/4.12.17/rhcos-4.12.2-x86_64-live.x86_64.iso"
+      rootFSUrl: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.12/4.17.2/rhcos-4.12.2-x86_64-live-rootfs.x86_64.img"
       cpuArchitecture: "x86_64"

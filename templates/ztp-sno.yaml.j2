@@ -19,7 +19,7 @@ spec:
       - cidr: 10.128.0.0/14
         hostPrefix: 23
     machineNetwork:
-      - cidr: {{ ztp_network_cidr | default('192.168.210.0/24', true) }}
+      - cidr: {{ ztp_network_cidr | default('192.168.235.0/24', true) }}
     serviceNetwork:
       - 172.30.0.0/16
     additionalNTPSources:

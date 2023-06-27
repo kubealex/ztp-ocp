@@ -16,7 +16,7 @@
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/terraform"
         dest: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}"
-        mode: 0755
+        mode: "0755"
 
     - name: ZTP Setup | Pre-config | Create ssh keypair
       community.crypto.openssh_keypair:
@@ -27,7 +27,7 @@
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/{{ item }}"
         dest: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/{{ item }}"
-        mode: 0755
+        mode: "0755"
       loop:
         - id_rsa_ocp_setup
         - id_rsa_ocp_setup.pub
@@ -41,14 +41,14 @@
       ansible.builtin.copy:
         src: files/localdns.conf
         dest: /etc/NetworkManager/conf.d/{{ ztp_cluster_name | default('ztp-sno', true) }}-localdns.conf
-        mode: 0755
+        mode: "0755"
       become: true
 
     - name: ZTP Setup | Provisioning | Configure NetworkManager for libvirt network
       ansible.builtin.template:
         src: templates/libvirt_dnsmasq_sno.j2
         dest: "/etc/NetworkManager/dnsmasq.d/{{ ztp_cluster_name | default('ztp-sno', true) }}-libvirt_dnsmasq.conf"
-        mode: 0755
+        mode: "0755"
       become: true
 
     - name: ZTP Setup | Provisioning | Use TF project to ensure pool and network are defined
@@ -56,9 +56,9 @@
         project_path: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/terraform/libvirt-resources"
         variables:
           domain: "{{ ztp_cluster_name | default('ztp-sno', true) }}.{{ ztp_cluster_domain | default('ocpdemo.labs', true) }}"
-          network_cidr: ' ["{{ ztp_network_cidr | default("192.168.210.0/24", true) }}"]'
+          network_cidr: ' ["{{ ztp_network_cidr | default("192.168.235.0/24", true) }}"]'
           cluster_name: "{{ ztp_cluster_name | default('ztp', true) }}"
-          dns: "{{ ztp_node_ip | default('192.168.210.2') }}"
+          dns: "{{ ztp_node_ip | default('192.168.235.2') }}"
         force_init: true
         state: present
       become: true
@@ -71,7 +71,7 @@
           hostname: "{{ ztp_node_name | default('ztp-sno', true) }}"
           libvirt_network: "{{ ztp_cluster_name | default('ztp', true) }}"
           libvirt_pool: "{{ ztp_cluster_name | default('ztp', true) }}"
-          vm_net_ip: "{{ ztp_node_ip | default('192.168.210.2', true) }}"
+          vm_net_ip: "{{ ztp_node_ip | default('192.168.235.2', true) }}"
           cpu: "{{ ztp_node_cpu | default(8, true) }}"
           memory: "{{ ztp_node_memory | default(32, true) }}"
           vm_volume_size: "{{ ztp_node_disk_size | default(100, true) }}"
@@ -103,7 +103,7 @@
         path: "{{ item }}"
         state: directory
         recurse: true
-        mode: 0755
+        mode: "0755"
       loop:
         - "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/gitops"
         - "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/gitops/siteconfig"
@@ -113,13 +113,13 @@
       ansible.builtin.template:
         src: ztp-sno.yaml.j2
         dest: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/gitops/siteconfig/{{ ztp_cluster_name | default('ztp-sno', true) }}.yml"
-        mode: 0755
+        mode: "0755"
 
     - name: ZTP Setup | Manifests | Fire up BMC Credentials secret
       ansible.builtin.template:
         src: bmc-credentials.yml.j2
         dest: "{{ item }}"
-        mode: 0755
+        mode: "0755"
       loop:
         - "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/gitops/siteconfig/{{ ztp_cluster_name | default('ztp-sno', true) }}-bmc-credentials.yml"
         - "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/gitops/manifests/{{ ztp_cluster_name | default('ztp-sno', true) }}-bmc-credentials.yml"
@@ -128,7 +128,7 @@
       ansible.builtin.template:
         src: pull-secret.yml.j2
         dest: "{{ item }}"
-        mode: 0755
+        mode: "0755"
       loop:
         - "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/gitops/siteconfig/{{ ztp_cluster_name | default('ztp-sno', true) }}-pull-secret.yml"
         - "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/gitops/manifests/{{ ztp_cluster_name | default('ztp-sno', true) }}-pull-secret.yml"
@@ -137,13 +137,13 @@
       ansible.builtin.template:
         src: kustomization.yml.j2
         dest: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/gitops/siteconfig/kustomization.yaml"
-        mode: 0755
+        mode: "0755"
 
     - name: ZTP Setup | Manifests | Copy siteconfig utility to remote system
       ansible.builtin.copy:
         src: "{{ item }}"
         dest: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/"
-        mode: 0755
+        mode: "0755"
       loop:
         - siteconfig-generator
         - KlusterletAddonConfig.yaml
@@ -152,13 +152,13 @@
       ansible.builtin.copy:
         src: "KlusterletAddonConfig.yaml"
         dest: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/gitops/siteconfig"
-        mode: 0755
+        mode: "0755"
 
     - name: ZTP Setup | Manifests | Create dummy folder
       ansible.builtin.file:
         path: "{{ ztp_home }}/{{ ztp_cluster_name | default('ztp-sno', true) }}/extra-manifest"
         state: directory
-        mode: 0755
+        mode: "0755"
 
     - name: ZTP Setup | Manifests | Generate manifests
       ansible.builtin.shell:

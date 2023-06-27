@@ -41,9 +41,9 @@ Here are some of the configurations that can be provided, according to them the 
 | ztp_working_directory:    | Where all cluster-related manifests and files will be stored  | ~                                                                             |
 | ztp_cluster_name:         | Name of the SNO cluster                                       | ztp-sno                                                                       |
 | ztp_cluster_domain:       | Domain of the SNO cluster                                     |ocpdemo.labs                                                                   |
-| ztp_network_cidr:         | CIDR of the cluster                                           |192.168.210.0/24                                                               |
+| ztp_network_cidr:         | CIDR of the cluster                                           |192.168.235.0/24                                                               |
 | ztp_node_name:            | Hostname of the node                                          |ztp-sno                                                                        |
-| ztp_node_ip:              | IP of the Node                                                |192.168.210.2                                                                  |
+| ztp_node_ip:              | IP of the Node                                                |192.168.235.2                                                                  |
 | ztp_node_cpu:             | Number of vCPUs for the cluster                               |8                                                                              |
 | ztp_node_memory:          | Memory capacity for the node                                  |32                                                                             |
 | ztp_bmc_host:             | IP of the interface to bind for sushy-tools                   |0.0.0.0                                                                        |

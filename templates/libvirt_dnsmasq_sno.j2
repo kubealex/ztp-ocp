@@ -1,2 +1,2 @@
-server={{ ztp_network_cidr | default('192.168.210.0/24', true) | ansible.utils.next_nth_usable(1) }}
-address=/{{ ztp_cluster_name | default('ztp-sno', true) }}.{{ ztp_cluster_domain | default('ocpdemo.labs', true) }}/{{ ztp_node_ip | default('192.168.210.7', true) }}
+server={{ ztp_network_cidr | default('192.168.235.0/24', true) | ansible.utils.next_nth_usable(1) }}
+address=/{{ ztp_cluster_name | default('ztp-sno', true) }}.{{ ztp_cluster_domain | default('ocpdemo.labs', true) }}/{{ ztp_node_ip | default('192.168.235.7', true) }}

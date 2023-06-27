@@ -4,7 +4,7 @@ variable "memory" { default = 32 }
 variable "cpu" { default = 8 }
 variable "vm_mac_address" { default = "52:54:00:bd:ab:cc" }
 variable "vm_volume_size" { default = 105 }
-variable "vm_net_ip" { default = "192.168.210.7" }
+variable "vm_net_ip" { default = "192.168.235.7" }
 variable "local_volume_size" { default = 50 }
 variable "local_volume_enabled" { default = false }
 variable "libvirt_network" { default = "ztp" }
@@ -71,7 +71,7 @@ resource "libvirt_domain" "master" {
   }
 
   graphics {
-    type = "spice"
+    type = "vnc"
     listen_type = "address"
     autoport = "true"
   }

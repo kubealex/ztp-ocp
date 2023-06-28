@@ -31,7 +31,7 @@
       loop:
         - NetworkManager
         - dnsmasq
-        - libvirtd
+      #  - libvirtd
       become: true
 
     - name: ZTP Setup | Cleanup | Delete workspace

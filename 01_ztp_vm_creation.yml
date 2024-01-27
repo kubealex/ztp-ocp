@@ -89,7 +89,7 @@
       loop:
         - NetworkManager
         - dnsmasq
-        - libvirtd
+        #- libvirtd
       become: true
 
     - name: ZTP Setup | Manifests | Use outputs to trigger template
